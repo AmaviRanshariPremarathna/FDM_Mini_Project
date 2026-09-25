@@ -10,6 +10,7 @@ CATEGORICAL_COLUMNS = [
     "TrafficType",
     "VisitorType",
     "Weekend",
+    "VisitorType_Weekend",
 ]
 
 

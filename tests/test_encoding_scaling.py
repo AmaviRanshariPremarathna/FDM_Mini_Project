@@ -5,12 +5,14 @@ from src.preprocessing.encoding_scaling import (
     CATEGORICAL_COLUMNS,
     build_preprocessor,
 )
-
+from src.preprocessing.feature_engineering import add_engineered_features
 
 data = pd.read_csv("data/raw/online_shoppers_intention.csv")
 
 X = data.drop(columns=["Revenue"])
 y = data["Revenue"]
+
+X = add_engineered_features(X)
 
 numerical_columns = [
     column

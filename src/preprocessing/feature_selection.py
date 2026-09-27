@@ -42,7 +42,7 @@ def cross_validated_permutation_importance(
     random_state=42,
 ):
     """Rank features by permutation importance on held-out CV folds."""
-    splitter = cv or StratifiedKFold(n_splits=5, shuffle=True, random_state=random_state)
+    splitter = StratifiedKFold(n_splits=cv, shuffle=True, random_state=random_state) if isinstance(cv, int) else (cv if cv is not None else StratifiedKFold(n_splits=5, shuffle=True, random_state=random_state))
     importances = []
     feature_names = list(X.columns) if hasattr(X, "columns") else list(range(X.shape[1]))
 

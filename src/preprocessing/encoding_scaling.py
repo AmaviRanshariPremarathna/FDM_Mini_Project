@@ -14,19 +14,19 @@ CATEGORICAL_COLUMNS = [
 ]
 
 
-def build_preprocessor(numerical_columns):
+def build_preprocessor(numerical_columns, categorical_columns=None):
     """
-    Create a preprocessing pipeline for categorical encoding
-    and numerical feature scaling.
+    Create categorical encoding and numerical scaling.
+    Exclude Revenue and fit only on training data.
+    """
 
-    Important:
-    - Do not include the target column 'Revenue'.
-    - Fit the preprocessor only on training data.
-    """
+    # Allow a different categorical list for feature experiments
+    if categorical_columns is None:
+        categorical_columns = CATEGORICAL_COLUMNS
 
     categorical_transformer = OneHotEncoder(
         handle_unknown="ignore",
-        sparse_output=False
+        sparse_output=False,
     )
 
     numerical_transformer = StandardScaler()
@@ -36,7 +36,7 @@ def build_preprocessor(numerical_columns):
             (
                 "categorical",
                 categorical_transformer,
-                CATEGORICAL_COLUMNS,
+                categorical_columns,
             ),
             (
                 "numerical",

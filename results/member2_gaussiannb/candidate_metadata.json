@@ -1,0 +1,31 @@
+{
+  "model": "GaussianNB",
+  "var_smoothing": 0.5,
+  "weighting": "none",
+  "input_columns": [
+    "Administrative",
+    "Administrative_Duration",
+    "Informational",
+    "Informational_Duration",
+    "ProductRelated",
+    "ProductRelated_Duration",
+    "BounceRates",
+    "ExitRates",
+    "PageValues",
+    "SpecialDay",
+    "Month",
+    "OperatingSystems",
+    "Browser",
+    "Region",
+    "TrafficType",
+    "VisitorType",
+    "Weekend"
+  ],
+  "engineered_features": false,
+  "includes_PageValues": true,
+  "input_format": "Existing log-transformed features before encoding/scaling",
+  "validation": "5-fold stratified CV, shuffle=True, random_state=42",
+  "selection_metric": "purchase-class F1",
+  "validation_f1": 0.5946743539892598,
+  "test_set_evaluated": false
+}

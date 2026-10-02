@@ -1,12 +1,28 @@
 {
   "algorithm": "GradientBoostingClassifier",
-  "best_hyperparameters": {
-    "learning_rate": 0.11239882614641974,
-    "max_depth": 2,
-    "n_estimators": 64
+  "data_source": "data/processed/X_train_selected.csv",
+  "cross_validation": {
+    "method": "StratifiedKFold",
+    "n_splits": 5,
+    "shuffle": true,
+    "random_state": 42
   },
-  "weighting_method": "balanced sample_weight (class_weight not supported by GradientBoostingClassifier)",
-  "final_configuration": "tuned hyperparameters + balanced sample weighting + engineered features + PageValues",
-  "final_f1_mean": 0.6624786368298161,
-  "final_f1_std": 0.01373507345582161
+  "scoring": [
+    "f1",
+    "precision",
+    "recall",
+    "roc_auc",
+    "pr_auc"
+  ],
+  "best_hyperparameters": {
+    "learning_rate": 0.03017132848502315,
+    "max_depth": 2,
+    "n_estimators": 107
+  },
+  "weighting_method": "balanced sample_weight computed inside each training fold",
+  "final_candidate_configuration": "tuned hyperparameters + balanced sample weighting + selected features + engineered features + PageValues",
+  "final_f1_mean": 0.6619966701913417,
+  "final_f1_std": 0.012553654960778107,
+  "test_set_used": false,
+  "random_search_iterations": 10
 }

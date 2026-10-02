@@ -1,6 +1,6 @@
 {
   "selected_weighting": "balanced",
-  "selected_C": 0.002848035868435802,
+  "selected_C": 0.0017782794100389228,
   "feature_set": "X_train_selected.csv (Member 3, 18 columns)",
   "categorical_columns": [
     "Month",

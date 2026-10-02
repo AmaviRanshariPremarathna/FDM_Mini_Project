@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from scipy import stats
 from sklearn.base import clone
 from sklearn.inspection import permutation_importance
 from sklearn.model_selection import StratifiedKFold, cross_validate
@@ -30,6 +31,33 @@ def correlation_pairs(X, threshold=0.80, columns=None):
         pairs,
         columns=["feature_a", "feature_b", "correlation", "absolute_correlation"],
     ).sort_values("absolute_correlation", ascending=False, ignore_index=True)
+
+
+def categorical_chi2_screening(X, y, categorical_columns=None, alpha=0.05):
+    """
+    Screen categorical features against a binary target using the Chi-Square
+    test of independence (connecting Member 3 EDA findings to feature selection).
+    """
+    if categorical_columns is None:
+        categorical_columns = X.select_dtypes(exclude=np.number).columns.tolist()
+
+    results = []
+    for col in categorical_columns:
+        if col not in X.columns:
+            raise KeyError(f"Categorical feature not found: {col}")
+        contingency = pd.crosstab(X[col], y)
+        chi2, p_val, dof, _ = stats.chi2_contingency(contingency)
+        results.append(
+            {
+                "feature": col,
+                "chi2": float(chi2),
+                "p_value": float(p_val),
+                "dof": int(dof),
+                "significant": bool(p_val < alpha),
+            }
+        )
+
+    return pd.DataFrame(results).sort_values("chi2", ascending=False, ignore_index=True)
 
 
 def cross_validated_permutation_importance(
@@ -73,14 +101,25 @@ def cross_validated_permutation_importance(
     ).sort_values("importance_mean", ascending=False, ignore_index=True)
 
 
-def compare_feature_drop(estimator, X, y, feature, scoring="f1", cv=None):
-    """Compare the full feature set with one candidate removed using CV."""
-    if feature not in X.columns:
-        raise KeyError(f"Feature not found: {feature}")
+def compare_feature_drop(estimator, X, y, feature, scoring="f1", cv=None, drop_name="drop"):
+    """
+    Compare the full feature set with one or more candidate features removed using CV.
+    `feature` can be a single column string or an iterable of column strings.
+    """
+    if isinstance(feature, str):
+        drop_cols = [feature]
+    else:
+        drop_cols = list(feature)
+
+    missing = [f for f in drop_cols if f not in X.columns]
+    if missing:
+        raise KeyError(f"Feature(s) not found: {missing}")
 
     splitter = cv or StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    remaining_features = X.columns.drop(drop_cols)
+
     rows = []
-    for name, features in (("keep", X.columns), ("drop", X.columns.drop(feature))):
+    for name, features in (("keep", X.columns), (drop_name, remaining_features)):
         scores = cross_validate(
             estimator,
             X.loc[:, features],
@@ -98,3 +137,8 @@ def compare_feature_drop(estimator, X, y, feature, scoring="f1", cv=None):
         )
 
     return pd.DataFrame(rows)
+
+
+def select_features_by_importance(importance_df, threshold=0.0):
+    """Return features with importance strictly greater than the given threshold."""
+    return importance_df.loc[importance_df["importance_mean"] > threshold, "feature"].tolist()

@@ -1,0 +1,12 @@
+{
+  "algorithm": "GradientBoostingClassifier",
+  "best_hyperparameters": {
+    "learning_rate": 0.11239882614641974,
+    "max_depth": 2,
+    "n_estimators": 64
+  },
+  "weighting_method": "balanced sample_weight (class_weight not supported by GradientBoostingClassifier)",
+  "final_configuration": "tuned hyperparameters + balanced sample weighting + engineered features + PageValues",
+  "final_f1_mean": 0.6624786368298161,
+  "final_f1_std": 0.01373507345582161
+}

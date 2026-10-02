@@ -1,0 +1,27 @@
+{
+  "selected_weighting": "balanced",
+  "selected_C": 0.002848035868435802,
+  "feature_set": "X_train_selected.csv (Member 3, 18 columns)",
+  "categorical_columns": [
+    "Month",
+    "OperatingSystems",
+    "Browser",
+    "TrafficType",
+    "VisitorType",
+    "Weekend",
+    "VisitorType_Weekend"
+  ],
+  "numerical_columns": [
+    "Administrative",
+    "Administrative_Duration",
+    "Informational",
+    "Informational_Duration",
+    "BounceRates",
+    "ExitRates",
+    "PageValues",
+    "SpecialDay",
+    "TotalPages",
+    "TotalDuration",
+    "AvgTimePerPage"
+  ]
+}

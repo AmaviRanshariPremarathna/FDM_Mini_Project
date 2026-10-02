@@ -1,0 +1,21 @@
+Condition,Metric,Mean,Std
+"Engineered, before selection (21)",f1,0.6665650676930814,0.013777869726862853
+"Engineered, before selection (21)",precision,0.576566058139488,0.014456200510956257
+"Engineered, before selection (21)",recall,0.7909418193506912,0.030804359359077993
+"Engineered, before selection (21)",roc_auc,0.9107157673591354,0.00751646725581135
+"Engineered, before selection (21)",average_precision,0.6626590933179907,0.017080830933190863
+Selected by Member 3 (18),f1,0.6664315058627089,0.013995136954147749
+Selected by Member 3 (18),precision,0.5778063317712198,0.016160062695020797
+Selected by Member 3 (18),recall,0.7883231543983713,0.029812248386818375
+Selected by Member 3 (18),roc_auc,0.9117141106230932,0.007209224148385503
+Selected by Member 3 (18),average_precision,0.6637169424348077,0.01747783786917031
+"Selected, 4 engineered columns removed (14)",f1,0.6645045209983377,0.012107314481013808
+"Selected, 4 engineered columns removed (14)",precision,0.5814410400882826,0.014530217326485781
+"Selected, 4 engineered columns removed (14)",recall,0.7765220186435231,0.03061833235350462
+"Selected, 4 engineered columns removed (14)",roc_auc,0.9147896464493744,0.007297152885773517
+"Selected, 4 engineered columns removed (14)",average_precision,0.6648968953641529,0.01655890823459466
+Original raw columns only (17),f1,0.6672802227894915,0.014132953561965544
+Original raw columns only (17),precision,0.5801583782979036,0.014543977182179544
+Original raw columns only (17),recall,0.7863559412836173,0.03209836368228604
+Original raw columns only (17),roc_auc,0.9112327014162475,0.007763749798864827
+Original raw columns only (17),average_precision,0.66158244818064,0.016916869802197386

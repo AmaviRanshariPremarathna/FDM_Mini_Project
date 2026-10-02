@@ -1,0 +1,21 @@
+Condition,Metric,Mean,Std
+All Engineered (21 features),f1,0.683939029781287,0.01823123858082154
+All Engineered (21 features),precision,0.6356179226675355,0.014716911428103104
+All Engineered (21 features),recall,0.7411378977820636,0.03436648706320302
+All Engineered (21 features),roc_auc,0.9238559838113911,0.004774509077373477
+All Engineered (21 features),average_precision,0.7268793625010861,0.019786692536543752
+Selected Features (18 features - Candidate),f1,0.6844037134231366,0.007836285706504778
+Selected Features (18 features - Candidate),precision,0.6325464806610115,0.01226853879201267
+Selected Features (18 features - Candidate),recall,0.7463816564877318,0.023561569315446704
+Selected Features (18 features - Candidate),roc_auc,0.9269820075566603,0.0027228214065327674
+Selected Features (18 features - Candidate),average_precision,0.7320461954495581,0.014639363289193654
+Without Engineered Features (14 features),f1,0.6615677787302537,0.019223752811767
+Without Engineered Features (14 features),precision,0.6011250459211437,0.0265236800383154
+Without Engineered Features (14 features),recall,0.7365520197149898,0.023199690953330437
+Without Engineered Features (14 features),roc_auc,0.921675846793444,0.00487447880471747
+Without Engineered Features (14 features),average_precision,0.7026242922027612,0.022554187789300375
+Original Raw Features Only (17 features),f1,0.6789226939328318,0.014526960136274365
+Original Raw Features Only (17 features),precision,0.6258319710137907,0.0132805417550612
+Original Raw Features Only (17 features),recall,0.7424536590592521,0.026207844415308126
+Original Raw Features Only (17 features),roc_auc,0.9271576471064341,0.0030746645805987747
+Original Raw Features Only (17 features),average_precision,0.7302007408146329,0.02294932950380078

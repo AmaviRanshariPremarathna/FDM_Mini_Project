@@ -1,0 +1,18 @@
+{
+  "algorithm": "RandomForestClassifier",
+  "best_hyperparameters": {
+    "n_estimators": 200,
+    "max_depth": 20,
+    "min_samples_leaf": 1
+  },
+  "weighting_method": "class_weight='balanced'",
+  "feature_set": "X_train_selected.csv (Member 3, 18 features)",
+  "validation": "5-fold stratified CV, shuffle=True, random_state=42",
+  "f1_mean": 0.6844037134231366,
+  "f1_std": 0.007836285706504778,
+  "precision_mean": 0.6325464806610115,
+  "recall_mean": 0.7463816564877318,
+  "roc_auc_mean": 0.9269820075566603,
+  "pr_auc_mean": 0.7320461954495581,
+  "test_set_evaluated": false
+}

@@ -10,7 +10,7 @@ SKEWED_COLUMNS = [
 ]
 
 
-def add_engineered_features(X):
+def add_engineered_features(X, include_advanced_features=False):
     """
     Derive TotalPages, TotalDuration, AvgTimePerPage, and a
     VisitorType x Weekend interaction feature, from RAW values.
@@ -21,6 +21,16 @@ def add_engineered_features(X):
 
     Row-wise arithmetic only, no fitted parameters — safe to apply
     identically to train and test.
+
+    Parameters
+    ----------
+    X : pd.DataFrame
+        Input raw dataframe.
+    include_advanced_features : bool, default=False
+        If True, adds high-signal behavioral ratio and interaction features:
+        - Bounce_Exit_Ratio: bounce rate relative to exit rate (page abandonment indicator)
+        - PageValue_Duration: interaction between page value and log browsing time
+        - Has_PageValues: indicator flag for non-zero page values (addresses zero-inflation)
     """
     X = X.copy()
 
@@ -32,6 +42,16 @@ def add_engineered_features(X):
         X["TotalPages"] > 0, X["TotalDuration"] / X["TotalPages"], 0
     )
     X["VisitorType_Weekend"] = X["VisitorType"].astype(str) + "_" + X["Weekend"].astype(str)
+
+    if include_advanced_features:
+        # Behavioral ratio: bounce relative to exit rate
+        X["Bounce_Exit_Ratio"] = np.where(
+            X["ExitRates"] > 0, X["BounceRates"] / X["ExitRates"], 0.0
+        )
+        # Interaction between high page value and session duration
+        X["PageValue_Duration"] = X["PageValues"] * np.log1p(X["TotalDuration"])
+        # Sparsity flag for zero-inflated PageValues
+        X["Has_PageValues"] = (X["PageValues"] > 0).astype(float)
 
     return X
 

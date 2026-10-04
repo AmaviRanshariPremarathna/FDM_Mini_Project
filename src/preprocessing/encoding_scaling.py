@@ -14,10 +14,22 @@ CATEGORICAL_COLUMNS = [
 ]
 
 
-def build_preprocessor(numerical_columns, categorical_columns=None):
+def build_preprocessor(numerical_columns, categorical_columns=None, scaler="standard"):
     """
     Create categorical encoding and numerical scaling.
     Exclude Revenue and fit only on training data.
+
+    Parameters
+    ----------
+    numerical_columns : list
+        List of numeric column names to scale.
+    categorical_columns : list, optional
+        List of categorical column names to one-hot encode.
+    scaler : {"standard", "robust", "minmax"}, default="standard"
+        Scaling method to apply:
+        - "standard": StandardScaler (zero mean, unit variance)
+        - "robust": RobustScaler (scales using median and IQR, outlier-resilient)
+        - "minmax": MinMaxScaler (bounds features between [0, 1])
     """
 
     # Allow a different categorical list for feature experiments
@@ -29,7 +41,14 @@ def build_preprocessor(numerical_columns, categorical_columns=None):
         sparse_output=False,
     )
 
-    numerical_transformer = StandardScaler()
+    if scaler == "robust":
+        from sklearn.preprocessing import RobustScaler
+        numerical_transformer = RobustScaler()
+    elif scaler == "minmax":
+        from sklearn.preprocessing import MinMaxScaler
+        numerical_transformer = MinMaxScaler()
+    else:
+        numerical_transformer = StandardScaler()
 
     preprocessor = ColumnTransformer(
         transformers=[

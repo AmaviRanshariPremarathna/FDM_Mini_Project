@@ -21,6 +21,20 @@ def test_engineered_features():
     assert not np.isinf(X_eng["AvgTimePerPage"]).any()
 
 
+def test_advanced_engineered_features():
+    data = pd.read_csv("data/raw/online_shoppers_intention.csv")
+    X = data.drop(columns=["Revenue"])
+
+    X_eng = add_engineered_features(X, include_advanced_features=True)
+
+    for col in ["Bounce_Exit_Ratio", "PageValue_Duration", "Has_PageValues"]:
+        assert col in X_eng.columns
+
+    assert X_eng["Bounce_Exit_Ratio"].isna().sum() == 0
+    assert not np.isinf(X_eng["Bounce_Exit_Ratio"]).any()
+    assert set(X_eng["Has_PageValues"].unique()).issubset({0.0, 1.0})
+
+
 def test_log_transform_replaces_in_place():
     data = pd.read_csv("data/raw/online_shoppers_intention.csv")
     X = add_engineered_features(data.drop(columns=["Revenue"]))

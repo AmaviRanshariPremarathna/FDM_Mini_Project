@@ -1,15 +1,16 @@
 {
   "model": "GaussianNB",
-  "feature_set": "Original 17 logged features",
-  "var_smoothing": 0.5,
+  "feature_set": "Selected features with zero-inflated noise pruned (15 columns)",
+  "pruned_features": [
+    "Informational",
+    "Informational_Duration",
+    "Administrative_Duration"
+  ],
+  "scaler": "RobustScaler",
+  "var_smoothing": 0.3,
   "weighting": "none",
   "input_columns": [
     "Administrative",
-    "Administrative_Duration",
-    "Informational",
-    "Informational_Duration",
-    "ProductRelated",
-    "ProductRelated_Duration",
     "BounceRates",
     "ExitRates",
     "PageValues",
@@ -17,17 +18,21 @@
     "Month",
     "OperatingSystems",
     "Browser",
-    "Region",
     "TrafficType",
     "VisitorType",
-    "Weekend"
+    "Weekend",
+    "TotalPages",
+    "TotalDuration",
+    "AvgTimePerPage",
+    "VisitorType_Weekend"
   ],
-  "engineered_features": false,
+  "engineered_features": true,
   "includes_PageValues": true,
-  "input_format": "Existing log-transformed features before encoding/scaling",
   "validation": "5-fold stratified CV, shuffle=True, random_state=42",
   "selection_metric": "purchase-class F1",
-  "validation_f1": 0.5946743539892598,
-  "pagevalues_comparison_feature_set": "Selected 18 features",
+  "validation_f1": 0.6452671473670195,
+  "validation_f1_std": 0.0092653070646785,
+  "validation_accuracy": 0.8801726851502103,
+  "validation_roc_auc": 0.8891730774068526,
   "test_set_evaluated": false
 }

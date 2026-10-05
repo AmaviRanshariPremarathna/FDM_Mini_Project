@@ -12,17 +12,19 @@
     "precision",
     "recall",
     "roc_auc",
-    "pr_auc"
+    "accuracy"
   ],
   "best_hyperparameters": {
-    "learning_rate": 0.03017132848502315,
-    "max_depth": 2,
-    "n_estimators": 107
+    "n_estimators": 120,
+    "learning_rate": 0.05,
+    "max_depth": 4,
+    "subsample": 0.8
   },
-  "weighting_method": "balanced sample_weight computed inside each training fold",
-  "final_candidate_configuration": "tuned hyperparameters + balanced sample weighting + selected features + engineered features + PageValues",
-  "final_f1_mean": 0.6619966701913417,
-  "final_f1_std": 0.012553654960778107,
-  "test_set_used": false,
-  "random_search_iterations": 10
+  "weighting_method": "calibrated sample_weight {0: 1.0, 1: 2.5} computed inside each training fold",
+  "final_candidate_configuration": "tuned hyperparameters (depth=4, lr=0.05, n_est=120, subsample=0.8) + calibrated sample weighting (ratio 2.5) + selected features",
+  "final_f1_mean": 0.6879036231082429,
+  "final_f1_std": 0.017506332450104987,
+  "final_accuracy_mean": 0.8937946454802616,
+  "final_roc_auc_mean": 0.9325789366035447,
+  "test_set_used": false
 }

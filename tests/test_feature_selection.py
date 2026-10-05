@@ -68,4 +68,25 @@ def test_categorical_chi2_screening_and_importance_selection():
         "importance_mean": [0.15, -0.01, 0.05],
     })
     selected = select_features_by_importance(imp_df, threshold=0.0)
-    assert selected == ["f1", "f3"]
+    assert selected == ["f1", "f3"]
+
+
+def test_sequential_backward_selection_and_variance():
+    from src.preprocessing.feature_selection import (
+        filter_low_variance_features,
+        sequential_backward_selection,
+    )
+    rng = np.random.RandomState(42)
+    X = pd.DataFrame(rng.normal(size=(80, 4)), columns=["f1", "f2", "f3", "constant"])
+    X["constant"] = 5.0
+    y = (X["f1"] > 0).astype(int)
+
+    filtered = filter_low_variance_features(X, threshold=0.0)
+    assert "constant" not in filtered
+    assert "f1" in filtered
+
+    estimator = LogisticRegression(max_iter=1000)
+    cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+    selected, history = sequential_backward_selection(estimator, X[["f1", "f2", "f3"]], y, min_features=1, cv=cv)
+    assert "f1" in selected
+    assert len(history) >= 1

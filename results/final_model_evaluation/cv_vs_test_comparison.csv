@@ -1,0 +1,7 @@
+Metric,5-Fold CV (Train),Final Test (Unseen),Generalization Gap
+Accuracy (%),90.2,89.47,-0.73%
+F1-Score,0.6895,0.6839,-0.0056
+Precision (%),64.4,64.5,+0.10%
+Recall (%),74.25,72.77,-1.48%
+ROC-AUC,0.931,0.9289,-0.0021
+PR-AUC,0.7503,0.7372,-0.0131

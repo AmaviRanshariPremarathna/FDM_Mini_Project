@@ -1,0 +1,23 @@
+{
+  "stage": "Stage 8 - Final Model Evaluation",
+  "selected_model": "RandomForestClassifier",
+  "model_path": "C:\\Users\\USER\\Desktop\\Y3S2\\FDM\\FDM_project\\FDM_Mini_Project\\models\\randomforest_candidate.joblib",
+  "test_data_path": "C:\\Users\\USER\\Desktop\\Y3S2\\FDM\\FDM_project\\FDM_Mini_Project\\data\\processed\\X_test_selected.csv",
+  "test_samples": 2441,
+  "evaluation_metrics": {
+    "accuracy": 0.8947152806226956,
+    "f1_score": 0.6838868388683886,
+    "precision": 0.6450116009280742,
+    "recall": 0.7277486910994765,
+    "specificity": 0.925692083535697,
+    "roc_auc": 0.9289417675941912,
+    "pr_auc": 0.7372324783865919
+  },
+  "confusion_matrix": {
+    "true_negatives": 1906,
+    "false_positives": 153,
+    "false_negatives": 104,
+    "true_positives": 278
+  },
+  "generalization_conclusion": "Minimal generalization gap between 5-fold CV and Test set (F1: 0.6895 -> 0.6839, delta: -0.0056). The model demonstrates excellent real-world generalization with zero indication of overfitting."
+}

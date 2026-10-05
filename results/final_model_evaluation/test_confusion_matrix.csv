@@ -1,0 +1,3 @@
+Actual Outcome,Predicted: No Purchase,Predicted: Purchase,Total,Rate
+Actual: No Purchase,1906,153,2059,92.57% Specificity
+Actual: Purchase,104,278,382,72.77% Sensitivity

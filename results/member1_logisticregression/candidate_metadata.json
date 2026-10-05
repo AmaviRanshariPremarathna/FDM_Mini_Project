@@ -1,6 +1,6 @@
 {
-  "selected_weighting": "balanced",
-  "selected_C": 0.0017782794100389228,
+  "selected_weighting": "calibrated {0: 1.0, 1: 2.5}",
+  "selected_C": 0.05,
   "feature_set": "X_train_selected.csv (Member 3, 18 columns)",
   "categorical_columns": [
     "Month",
@@ -23,5 +23,9 @@
     "TotalPages",
     "TotalDuration",
     "AvgTimePerPage"
-  ]
+  ],
+  "validation_f1": 0.6729174167655152,
+  "validation_f1_std": 0.017015965075063526,
+  "validation_accuracy": 0.8912336422317914,
+  "validation_roc_auc": 0.9163243796388058
 }

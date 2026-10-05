@@ -142,3 +142,69 @@ def compare_feature_drop(estimator, X, y, feature, scoring="f1", cv=None, drop_n
 def select_features_by_importance(importance_df, threshold=0.0):
     """Return features with importance strictly greater than the given threshold."""
     return importance_df.loc[importance_df["importance_mean"] > threshold, "feature"].tolist()
+
+
+def sequential_backward_selection(
+    estimator,
+    X,
+    y,
+    min_features=10,
+    scoring="f1",
+    cv=None,
+    verbose=False,
+):
+    """
+    Greedy sequential backward elimination (SBS).
+    Iteratively removes the feature whose removal produces the highest CV score,
+    stopping when removing any feature degrades performance or when min_features is reached.
+    """
+    splitter = cv or StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    current_features = list(X.columns)
+
+    # Initial baseline score
+    initial_scores = cross_validate(
+        estimator, X.loc[:, current_features], y, scoring=scoring, cv=splitter
+    )["test_score"]
+    best_score = float(initial_scores.mean())
+    history = [{"step": 0, "dropped": None, "score": best_score, "n_features": len(current_features)}]
+
+    while len(current_features) > min_features:
+        worst_feature = None
+        best_candidate_score = -np.inf
+
+        for candidate in current_features:
+            trial_features = [f for f in current_features if f != candidate]
+            scores = cross_validate(
+                estimator, X.loc[:, trial_features], y, scoring=scoring, cv=splitter
+            )["test_score"]
+            mean_trial_score = float(scores.mean())
+
+            if mean_trial_score > best_candidate_score:
+                best_candidate_score = mean_trial_score
+                worst_feature = candidate
+
+        # If dropping improves or matches the score (tolerance of 1e-4)
+        if best_candidate_score >= best_score - 1e-4:
+            current_features.remove(worst_feature)
+            best_score = best_candidate_score
+            history.append({
+                "step": len(history),
+                "dropped": worst_feature,
+                "score": best_score,
+                "n_features": len(current_features),
+            })
+            if verbose:
+                print(f"Dropped: {worst_feature} | New Score ({scoring}): {best_score:.4f}")
+        else:
+            break
+
+    return current_features, pd.DataFrame(history)
+
+
+def filter_low_variance_features(X, threshold=0.0):
+    """Return columns with variance strictly greater than threshold (numeric only)."""
+    numeric = X.select_dtypes(include=np.number)
+    variances = numeric.var()
+    retained_numeric = variances[variances > threshold].index.tolist()
+    non_numeric = [col for col in X.columns if col not in numeric.columns]
+    return retained_numeric + non_numeric

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopper Purchasing Intention Predictor</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="logo-area">
+          <div class="logo-icon">🛒</div>
+          <div>
+            <h1>Shopper Purchasing Intention Predictor</h1>
+            <p class="subtitle">AI-powered conversion intelligence using Random Forest Ensemble</p>
+          </div>
+        </div>
+        <div class="status-indicator" id="systemStatus">
+          <span class="status-dot pulsing"></span>
+          <span class="status-text" id="statusLabel">Checking Backend...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="main-content">
+      <!-- Input Panel -->
+      <section class="card form-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>Session Attributes</h2>
+            <p>Input real-time browsing metrics or select a scenario preset</p>
+          </div>
+        </div>
+
+        <!-- Scenario Presets Bar -->
+        <div class="presets-container">
+          <span class="presets-label">Quick Scenarios:</span>
+          <div class="presets-buttons">
+            <button type="button" class="btn-preset" id="presetHighIntent">
+              <span class="preset-icon">🔥</span> High-Intent Buyer
+            </button>
+            <button type="button" class="btn-preset" id="presetCasual">
+              <span class="preset-icon">👀</span> Casual Window Shopper
+            </button>
+            <button type="button" class="btn-preset" id="presetWeekend">
+              <span class="preset-icon">⚡</span> Returning Weekend Shopper
+            </button>
+            <button type="button" class="btn-preset btn-preset-clear" id="presetClear">
+              <span class="preset-icon">↺</span> Reset
+            </button>
+          </div>
+        </div>
+
+        <form id="predictionForm" novalidate>
+          <!-- Section 1: Page Activity -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <span class="section-badge">1</span> Page Browsing Activity
+            </h3>
+            <div class="form-grid-3">
+              <div class="input-group">
+                <label for="Administrative">Administrative Pages</label>
+                <input type="number" id="Administrative" name="Administrative" min="0" value="0" required>
+                <span class="field-hint">Account & settings pages</span>
+              </div>
+              <div class="input-group">
+                <label for="Administrative_Duration">Admin Duration (sec)</label>
+                <input type="number" id="Administrative_Duration" name="Administrative_Duration" min="0" step="0.1" value="0.0" required>
+                <span class="field-hint">Time spent on admin pages</span>
+              </div>
+              <div class="input-group">
+                <label for="Informational">Informational Pages</label>
+                <input type="number" id="Informational" name="Informational" min="0" value="0" required>
+                <span class="field-hint">About us, contact, blogs</span>
+              </div>
+              <div class="input-group">
+                <label for="Informational_Duration">Info Duration (sec)</label>
+                <input type="number" id="Informational_Duration" name="Informational_Duration" min="0" step="0.1" value="0.0" required>
+                <span class="field-hint">Time spent on info pages</span>
+              </div>
+              <div class="input-group">
+                <label for="ProductRelated">Product Pages</label>
+                <input type="number" id="ProductRelated" name="ProductRelated" min="0" value="5" required>
+                <span class="field-hint">Catalog & item view pages</span>
+              </div>
+              <div class="input-group">
+                <label for="ProductRelated_Duration">Product Duration (sec)</label>
+                <input type="number" id="ProductRelated_Duration" name="ProductRelated_Duration" min="0" step="0.1" value="120.0" required>
+                <span class="field-hint">Total time browsing products</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Behavioral Signals -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <span class="section-badge">2</span> Behavioral & Intent Signals
+            </h3>
+            <div class="form-grid-3">
+              <div class="input-group highlight-input">
+                <label for="PageValues">
+                  PageValues
+                  <span class="tooltip-trigger" title="Average value of pages visited prior to completing a transaction. Crucial conversion predictor!">ⓘ</span>
+                </label>
+                <input type="number" id="PageValues" name="PageValues" min="0" step="0.1" value="0.0" required>
+                <span class="field-hint">High PageValues indicates strong checkout intent</span>
+              </div>
+              <div class="input-group">
+                <label for="BounceRates">Bounce Rate (0.0 – 1.0)</label>
+                <input type="number" id="BounceRates" name="BounceRates" min="0" max="1" step="0.001" value="0.02" required>
+                <span class="field-hint">% of single-page visits</span>
+              </div>
+              <div class="input-group">
+                <label for="ExitRates">Exit Rate (0.0 – 1.0)</label>
+                <input type="number" id="ExitRates" name="ExitRates" min="0" max="1" step="0.001" value="0.04" required>
+                <span class="field-hint">% of exits from these pages</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Context & Profile -->
+          <div class="form-section">
+            <h3 class="section-title">
+              <span class="section-badge">3</span> Date, Context & Visitor Profile
+            </h3>
+            <div class="form-grid-3">
+              <div class="input-group">
+                <label for="Month">Month of Session</label>
+                <select id="Month" name="Month" required>
+                  <option value="Jan">January</option>
+                  <option value="Feb">February</option>
+                  <option value="Mar">March</option>
+                  <option value="Apr">April</option>
+                  <option value="May">May</option>
+                  <option value="Jun">June</option>
+                  <option value="Jul">July</option>
+                  <option value="Aug">August</option>
+                  <option value="Sep">September</option>
+                  <option value="Oct">October</option>
+                  <option value="Nov" selected>November (Peak Season)</option>
+                  <option value="Dec">December</option>
+                  
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="VisitorType">Visitor Type</label>
+                <select id="VisitorType" name="VisitorType" required>
+                  <option value="Returning_Visitor" selected>Returning Visitor</option>
+                  <option value="New_Visitor">New Visitor</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="Weekend">Weekend Session?</label>
+                <select id="Weekend" name="Weekend" required>
+                  <option value="false" selected>No (Weekday)</option>
+                  <option value="true">Yes (Weekend)</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="SpecialDay">Special Day Closeness (0.0 – 1.0)</label>
+                <input type="number" id="SpecialDay" name="SpecialDay" min="0" max="1" step="0.1" value="0.0" required>
+                <span class="field-hint">e.g. Near Mother's Day / Black Friday</span>
+              </div>
+              <div class="input-group">
+                <label for="TrafficType">Traffic Source Type</label>
+                <input type="number" id="TrafficType" name="TrafficType" min="1" max="20" value="2" required>
+                <span class="field-hint">Channel ID (1 to 20)</span>
+              </div>
+              <div class="input-group">
+                <label for="OperatingSystems">Operating System</label>
+                <input type="number" id="OperatingSystems" name="OperatingSystems" min="1" max="8" value="2" required>
+                <span class="field-hint">OS ID (1 to 8)</span>
+              </div>
+              <div class="input-group">
+                <label for="Browser">Browser ID</label>
+                <input type="number" id="Browser" name="Browser" min="1" max="13" value="2" required>
+                <span class="field-hint">Browser ID (1 to 13)</span>
+              </div>
+              <div class="input-group">
+                <label for="Region">Region ID</label>
+                <input type="number" id="Region" name="Region" min="1" max="9" value="1" required>
+                <span class="field-hint">Geographic region (1 to 9)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" id="btnPredict">
+              <span class="btn-text">Predict Purchasing Intention</span>
+              <span class="spinner" id="btnSpinner"></span>
+            </button>
+          </div>
+          <div class="form-error-alert" id="formError" style="display: none;"></div>
+        </form>
+      </section>
+
+      <!-- Results Panel -->
+      <section class="card results-card" id="resultsSection">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2>Prediction Results</h2>
+            <p>Live output from Random Forest ML model</p>
+          </div>
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div class="results-placeholder" id="resultsPlaceholder">
+          <div class="placeholder-icon">🎯</div>
+          <h3>Ready for Prediction</h3>
+          <p>Fill out the session attributes or click a quick scenario above, then submit the form to view real-time conversion probability.</p>
+        </div>
+
+        <!-- Active Results State -->
+        <div class="results-content" id="resultsContent" style="display: none;">
+          <!-- Outcome Banner -->
+          <div class="outcome-banner" id="outcomeBanner">
+            <div class="outcome-badge" id="outcomeBadge">
+              <span class="outcome-icon" id="outcomeIcon">✓</span>
+              <span class="outcome-label" id="outcomeLabel">Likely to Purchase</span>
+            </div>
+            <div class="intent-pill" id="intentPill">High Intent</div>
+          </div>
+
+          <!-- Probability Meter -->
+          <div class="metric-block">
+            <div class="metric-header">
+              <span class="metric-title">Purchase Probability</span>
+              <span class="metric-value" id="probValue">84.2%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar" id="progressBar" style="width: 84.2%;"></div>
+            </div>
+            <div class="progress-labels">
+              <span>0% (No Intent)</span>
+              <span>50% (Threshold)</span>
+              <span>100% (Certain Purchase)</span>
+            </div>
+          </div>
+
+          <!-- Marketing Recommendation Card -->
+          <div class="recommendation-card" id="recommendationCard">
+            <div class="rec-icon" id="recIcon">💡</div>
+            <div class="rec-body">
+              <h4 class="rec-title">E-Commerce Recommendation</h4>
+              <p class="rec-text" id="recText">High purchasing intent detected. Display a limited-time checkout offer or free shipping voucher to close the sale.</p>
+            </div>
+          </div>
+
+          <!-- Derived Session Insights -->
+          <div class="session-insights-box">
+            <h4>Engineered Session Breakdown</h4>
+            <div class="insights-grid">
+              <div class="insight-item">
+                <span class="insight-label">Total Pages Visited</span>
+                <span class="insight-val" id="insTotalPages">23</span>
+              </div>
+              <div class="insight-item">
+                <span class="insight-label">Total Duration</span>
+                <span class="insight-val" id="insTotalDuration">760.2s</span>
+              </div>
+              <div class="insight-item">
+                <span class="insight-label">Avg Time / Page</span>
+                <span class="insight-val" id="insAvgTime">33.0s</span>
+              </div>
+              <div class="insight-item">
+                <span class="insight-label">Visitor Interaction</span>
+                <span class="insight-val" id="insInteraction">Returning_False</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Debug JSON Toggle -->
+          <div class="debug-toggle-area">
+            <button type="button" class="btn-text-toggle" id="btnToggleDebug">Show Raw API JSON Payload ▾</button>
+            <pre class="json-code" id="debugJson" style="display: none;"></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>FDM Mini Project • Stage 10: End-to-End Frontend & User Experience • Powered by FastAPI & Scikit-Learn</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

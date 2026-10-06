@@ -6,7 +6,8 @@ from contextlib import asynccontextmanager
 import joblib
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Request
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 # Ensure project root is in sys.path
@@ -25,6 +26,7 @@ from backend.schemas import (
 )
 
 MODEL_PATH = PROJECT_ROOT / "models" / "randomforest_candidate.joblib"
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
 SELECTED_COLUMNS = [
     "Administrative",
     "Administrative_Duration",
@@ -136,7 +138,10 @@ def format_prediction_result(
 
 
 @app.get("/", tags=["System"])
-def root():
+def root(request: Request):
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept and FRONTEND_DIR.exists() and (FRONTEND_DIR / "index.html").exists():
+        return FileResponse(FRONTEND_DIR / "index.html")
     return {
         "message": "Online Shopper Purchasing Intention API is active.",
         "documentation": "/docs",
@@ -235,7 +240,6 @@ def predict_batch_sessions(batch: BatchPredictionRequest):
 # Mount frontend static files to serve the complete UI at http://localhost:8000/
 from fastapi.staticfiles import StaticFiles
 
-FRONTEND_DIR = PROJECT_ROOT / "frontend"
 if FRONTEND_DIR.exists():
     app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
 

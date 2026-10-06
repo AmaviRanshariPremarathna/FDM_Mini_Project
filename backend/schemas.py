@@ -24,14 +24,29 @@ class SessionInput(BaseModel):
     @field_validator("Month")
     @classmethod
     def validate_month(cls, v: str) -> str:
-        valid_months = {"Feb", "Mar", "May", "June", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
+        month_map = {
+            "January": "Jan",
+            "February": "Feb",
+            "March": "Mar",
+            "April": "Apr",
+            "May": "May",
+            "June": "June",
+            "Jun": "June",
+            "July": "Jul",
+            "August": "Aug",
+            "September": "Sep",
+            "October": "Oct",
+            "November": "Nov",
+            "December": "Dec",
+        }
+        valid_months = {
+            "Jan", "Feb", "Mar", "Apr", "May", "June", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        }
         clean_v = v.strip().capitalize()
-        # Handle 'June' special capitalization in dataset
-        if clean_v == "Jun":
-            clean_v = "June"
-        if clean_v not in valid_months:
-            raise ValueError(f"Invalid Month '{v}'. Must be one of {sorted(list(valid_months))}")
-        return clean_v
+        normalized = month_map.get(clean_v, clean_v)
+        if normalized not in valid_months:
+            raise ValueError(f"Invalid Month '{v}'. Must be a valid calendar month.")
+        return normalized
 
     @field_validator("VisitorType")
     @classmethod

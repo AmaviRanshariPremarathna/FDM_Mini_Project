@@ -20,6 +20,14 @@ def test_root_endpoint():
         assert data["documentation"] == "/docs"
 
 
+def test_root_html_for_browsers():
+    with TestClient(app) as client:
+        response = client.get("/", headers={"accept": "text/html,application/xhtml+xml"})
+        assert response.status_code == 200
+        assert "text/html" in response.headers.get("content-type", "")
+        assert "<title>Shopper Purchasing Intention Predictor</title>" in response.text
+
+
 def test_health_endpoint():
     with TestClient(app) as client:
         response = client.get("/health")
@@ -144,6 +152,35 @@ def test_predict_validation_invalid_month():
         }
         response = client.post("/predict", json=payload)
         assert response.status_code == 422
+
+
+def test_predict_valid_january_and_april():
+    with TestClient(app) as client:
+        for month_name in ["Jan", "January", "Apr", "April"]:
+            payload = {
+                "Administrative": 2,
+                "Administrative_Duration": 60.0,
+                "Informational": 1,
+                "Informational_Duration": 20.0,
+                "ProductRelated": 10,
+                "ProductRelated_Duration": 400.0,
+                "BounceRates": 0.01,
+                "ExitRates": 0.02,
+                "PageValues": 15.0,
+                "SpecialDay": 0.0,
+                "Month": month_name,
+                "OperatingSystems": 2,
+                "Browser": 2,
+                "Region": 1,
+                "TrafficType": 2,
+                "VisitorType": "Returning_Visitor",
+                "Weekend": False,
+            }
+            response = client.post("/predict", json=payload)
+            assert response.status_code == 200
+            data = response.json()
+            assert "prediction" in data
+            assert 0.0 <= data["purchase_probability"] <= 1.0
 
 
 def test_predict_validation_missing_field():

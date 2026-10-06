@@ -13,7 +13,7 @@
   "f1_std": 0.016069605334646114,
   "precision_mean": 0.6439672150040221,
   "recall_mean": 0.7424579449266044,
-  "roc_auc_mean": 0.9310230391381407,
+  "roc_auc_mean": 0.9310230391381404,
   "pr_auc_mean": 0.7502761013213014,
   "test_set_evaluated": false
 }

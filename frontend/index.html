@@ -28,8 +28,25 @@
       </div>
     </header>
 
-    <!-- Main Layout -->
-    <main class="main-content">
+    <!-- Mode Selection Tabs -->
+    <nav class="nav-tabs-wrapper" aria-label="Prediction Mode">
+      <div class="nav-tabs">
+        <button type="button" class="tab-button active" id="tabSingle" data-target="viewSingle">
+          <span class="tab-icon">⚡</span>
+          <span class="tab-label">Single Session Prediction</span>
+        </button>
+        <button type="button" class="tab-button" id="tabBatch" data-target="viewBatch">
+          <span class="tab-icon">📁</span>
+          <span class="tab-label">Batch Prediction (CSV / JSON)</span>
+          <span class="tab-badge">Bulk</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Tab 1: Single Session View -->
+    <div id="viewSingle" class="tab-view active">
+      <!-- Main Layout -->
+      <main class="main-content">
       <!-- Input Panel -->
       <section class="card form-card">
         <div class="card-header">
@@ -285,6 +302,205 @@
         </div>
       </section>
     </main>
+    </div> <!-- /#viewSingle -->
+
+    <!-- Tab 2: Batch Prediction View -->
+    <div id="viewBatch" class="tab-view" style="display: none;">
+      <div class="batch-layout">
+        <!-- Batch Upload & Config Card -->
+        <section class="card batch-input-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>Batch Session Dataset</h2>
+              <p>Upload a CSV file or paste JSON sessions to run bulk inference across multiple shopper visits.</p>
+            </div>
+          </div>
+
+          <!-- Quick Action Toolbar -->
+          <div class="presets-container batch-toolbar">
+            <span class="presets-label">Quick Actions:</span>
+            <div class="presets-buttons">
+              <button type="button" class="btn-preset" id="btnLoadSampleBatch">
+                <span class="preset-icon">📥</span> Load Sample Batch (10 Sessions)
+              </button>
+              <button type="button" class="btn-preset" id="btnDownloadTemplate">
+                <span class="preset-icon">📄</span> Download CSV Template
+              </button>
+              <button type="button" class="btn-preset btn-preset-clear" id="btnClearBatch">
+                <span class="preset-icon">↺</span> Clear Batch
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Upload Area -->
+          <div class="drop-zone" id="batchDropZone">
+            <input type="file" id="batchFileInput" accept=".csv,.json" style="display: none;">
+            <div class="drop-icon">📂</div>
+            <div class="drop-text-area">
+              <p class="drop-title">Drag & drop your CSV or JSON dataset here, or <button type="button" class="browse-link" id="btnBrowseFile">browse files</button></p>
+              <p class="drop-subtitle">Supports standard e-commerce session features (PageValues, Month, VisitorType, etc.)</p>
+            </div>
+            <div class="file-status-pill" id="batchFileStatus" style="display: none;">
+              <span class="file-icon">📊</span>
+              <span class="file-name" id="batchFileName">sample.csv</span>
+              <span class="file-count-badge" id="batchRecordCount">10 sessions ready</span>
+              <button type="button" class="file-remove-btn" id="btnRemoveBatchFile" title="Remove dataset">✕</button>
+            </div>
+          </div>
+
+          <!-- Direct JSON Input Toggle -->
+          <div class="direct-input-section">
+            <button type="button" class="btn-text-toggle" id="btnToggleDirectJson">
+              <span id="directJsonLabel">Or enter / paste raw JSON payload directly ▾</span>
+            </button>
+            <div id="directJsonContainer" style="display: none; margin-top: 10px;">
+              <textarea id="batchJsonArea" class="json-textarea" rows="6" placeholder='[
+  {
+    "Administrative": 3,
+    "Administrative_Duration": 120.0,
+    "Informational": 1,
+    "Informational_Duration": 45.0,
+    "ProductRelated": 25,
+    "ProductRelated_Duration": 950.0,
+    "BounceRates": 0.005,
+    "ExitRates": 0.015,
+    "PageValues": 35.5,
+    "SpecialDay": 0.0,
+    "Month": "Nov",
+    "OperatingSystems": 2,
+    "Browser": 2,
+    "Region": 1,
+    "TrafficType": 2,
+    "VisitorType": "Returning_Visitor",
+    "Weekend": false
+  }
+]'></textarea>
+              <div class="json-action-row">
+                <button type="button" class="btn-small-secondary" id="btnApplyJson">Parse & Load JSON</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Run Batch Button & Alerts -->
+          <div class="form-actions" style="margin-top: 20px;">
+            <button type="button" class="btn-primary" id="btnRunBatch">
+              <span class="btn-text" id="btnRunBatchText">Run Batch Prediction</span>
+              <span class="spinner" id="btnBatchSpinner"></span>
+            </button>
+          </div>
+          <div class="form-error-alert" id="batchErrorAlert" style="display: none;"></div>
+        </section>
+
+        <!-- Batch Results Dashboard -->
+        <section class="card batch-results-card" id="batchResultsCard">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>Batch Prediction Analysis</h2>
+              <p>Aggregated conversion rate metrics & session-by-session purchasing predictions</p>
+            </div>
+          </div>
+
+          <!-- Placeholder State -->
+          <div class="results-placeholder" id="batchPlaceholder">
+            <div class="placeholder-icon">📊</div>
+            <h3>No Batch Dataset Evaluated</h3>
+            <p>Upload a CSV file or click "Load Sample Batch", then run inference to generate bulk conversion insights.</p>
+          </div>
+
+          <!-- Active Batch Results -->
+          <div class="batch-results-content" id="batchResultsContent" style="display: none;">
+            <!-- KPI Summary Grid -->
+            <div class="batch-kpi-grid">
+              <div class="kpi-card">
+                <span class="kpi-label">Total Sessions</span>
+                <span class="kpi-value" id="kpiTotalSessions">0</span>
+              </div>
+              <div class="kpi-card kpi-card-success">
+                <div class="kpi-header-group">
+                  <span class="kpi-label">Predicted Purchases</span>
+                  <span class="kpi-badge" id="kpiConversionRate">0.0% Conv</span>
+                </div>
+                <span class="kpi-value" id="kpiPurchases">0</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">No Purchase</span>
+                <span class="kpi-value" id="kpiNonPurchases">0</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">Avg Probability</span>
+                <span class="kpi-value" id="kpiAvgProb">0.0%</span>
+              </div>
+              <div class="kpi-card kpi-card-highlight">
+                <span class="kpi-label">High-Intent Visitors</span>
+                <span class="kpi-value" id="kpiHighIntent">0</span>
+              </div>
+            </div>
+
+            <!-- Controls: Filter & Export -->
+            <div class="batch-filter-bar">
+              <div class="filter-controls">
+                <div class="filter-group">
+                  <label for="filterOutcome">Outcome:</label>
+                  <select id="filterOutcome" class="filter-select">
+                    <option value="all">All Outcomes</option>
+                    <option value="purchase">Purchases Only</option>
+                    <option value="nopurchase">No Purchase Only</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label for="filterIntent">Intent:</label>
+                  <select id="filterIntent" class="filter-select">
+                    <option value="all">All Intent Levels</option>
+                    <option value="high">High Intent Only</option>
+                    <option value="moderate">Moderate Intent Only</option>
+                    <option value="low">Low Intent Only</option>
+                  </select>
+                </div>
+                <div class="filter-group search-group">
+                  <input type="text" id="batchSearchInput" class="batch-search-input" placeholder="Search sessions (e.g. Nov, Returning)...">
+                </div>
+              </div>
+              <button type="button" class="btn-export" id="btnExportBatchCsv">
+                <span>📥</span> Export Results (CSV)
+              </button>
+            </div>
+
+            <!-- Scrollable Table -->
+            <div class="batch-table-container">
+              <table class="batch-table" id="batchTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Prediction</th>
+                    <th>Purchase Probability</th>
+                    <th>Intent Level</th>
+                    <th>PageValues</th>
+                    <th>Bounce Rate</th>
+                    <th>Month</th>
+                    <th>Visitor Type</th>
+                    <th>Session Metrics</th>
+                    <th>Marketing Action</th>
+                  </tr>
+                </thead>
+                <tbody id="batchTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-footer-info">
+              <span id="batchCountInfo">Showing 0 of 0 sessions</span>
+            </div>
+
+            <!-- Debug Toggle -->
+            <div class="debug-toggle-area">
+              <button type="button" class="btn-text-toggle" id="btnToggleBatchDebug">Show Raw API Batch JSON ▾</button>
+              <pre class="json-code" id="batchDebugJson" style="display: none;"></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div> <!-- /#viewBatch -->
 
     <!-- Footer -->
     <footer class="app-footer">

@@ -37,6 +37,21 @@ The header includes a real-time status pill that automatically queries `GET /hea
 
 ---
 
+### Dual Inference Modes: Single Session & Bulk Batch Prediction
+The UI features tab-based navigation supporting two inference workflows:
+1. **Single Session Prediction:** Interactive form with 18 browsing metrics, real-time validation, and 1-click scenario presets.
+2. **Batch Prediction (CSV / JSON):**
+   - **Drag & Drop Upload:** Accepts `.csv` or `.json` dataset files.
+   - **1-Click Sample Dataset:** "Load Sample Batch" injects 10 representative shopper sessions instantly for quick evaluation.
+   - **Downloadable CSV Template:** Provides pre-formatted template with standard headers.
+   - **Direct JSON Editor:** Collapsible area for pasting or inspecting raw JSON payloads.
+   - **KPI Executive Summary:** Visual statistics on Total Sessions, Conversion Rate (%), Non-Purchases, Average Probability, and High-Intent Leads.
+   - **Interactive Results Table:** Color-coded status badges, probability meters, intent level pills, and marketing recommendations.
+   - **Dynamic Filtering & Search:** Filter by prediction outcome, intent tier, or textual search (month, visitor type).
+   - **Export Enriched Results (CSV):** 1-click export of all session records combined with their model predictions and engineered features.
+
+---
+
 ## 2. End-to-End System Execution
 
 ### Option A: Unified Full-Stack Run (Recommended)
